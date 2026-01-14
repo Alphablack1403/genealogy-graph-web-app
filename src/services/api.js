@@ -1,15 +1,15 @@
 const API_URL = "http://localhost:3000";
 
-export const api = {
-  getPersons: async () => {
-    return fetch(`${API_URL}/persons`).then((r) => r.json());
-  },
+export async function getPersons() {
+  const res = await fetch(`${API_URL}/persons`);
+  return res.json();
+}
 
-  createPerson: async (person) => {
-    return fetch(`${API_URL}/persons`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(person)
-    });
-  }
-};
+export async function createPerson(person) {
+  const res = await fetch(`${API_URL}/persons`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(person),
+  });
+  return res.json();
+}

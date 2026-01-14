@@ -10,6 +10,9 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import FamilyForm from "./components/FamilyForm";
 import FamilyTree from "./components/FamilyTree";
+import { getPersons, createPerson } from "./services/api";
+import { useEffect } from "react";
+
 
 
 export default function App() {
@@ -22,6 +25,22 @@ export default function App() {
   const [apellidoMaterno, setApellidoMaterno] = useState("");
   const [padreId, setPadreId] = useState("");
   const [madreId, setMadreId] = useState("");
+
+useEffect(() => {
+  getPersons().then((data) => {
+    const loadedNodes = data.map((p) => ({
+      id: p.id,
+      data: {
+        label: `${p.nombres} ${p.apellidoPaterno} ${p.apellidoMaterno}`,
+        ...p,
+      },
+      position: { x: Math.random() * 400, y: Math.random() * 400 },
+    }));
+
+    setNodes(loadedNodes);
+  });
+}, []);
+
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -86,13 +105,20 @@ const agregarPersona = ({
 
   const idPersona = crypto.randomUUID();
 
+const nuevaPersona = {
+  nombres,
+  apellidoPaterno: apP,
+  apellidoMaterno: apM,
+  padreId,
+  madreId
+};
+
+createPerson(nuevaPersona).then((saved) => {
   const personaNode = {
-    id: idPersona,
+    id: saved.id,
     data: {
-      label: `${nombres} ${apP} ${apM}`,
-      nombres,
-      apellidoPaterno: apP,
-      apellidoMaterno: apM
+      label: `${saved.nombres} ${saved.apellidoPaterno} ${saved.apellidoMaterno}`,
+      ...saved
     },
     position: {
       x: Math.random() * 400 + 100,
@@ -101,6 +127,8 @@ const agregarPersona = ({
   };
 
   setNodes((nds) => [...nds, personaNode]);
+});
+
 
   if (padreId && madreId) {
   const parejaId = crearNodoPareja(padreId, madreId);
@@ -118,6 +146,83 @@ const agregarPersona = ({
 
 
   const personas = nodes.filter((n) => !n.id.startsWith("pareja"));
+
+useEffect(() => {
+  fetch("http://localhost:3000/persons")
+    .then((res) => res.json())
+    .then((data) => {
+      construirArbol(data);
+    });
+}, []);
+
+  
+const construirArbol = (personas) => {
+  const nuevosNodos = [];
+  const nuevasEdges = [];
+
+  const mapa = {};
+
+  // 1. Crear nodos persona
+  personas.forEach((p, index) => {
+    mapa[p.id] = p;
+
+    nuevosNodos.push({
+      id: p.id,
+      data: {
+        label: `${p.nombres} ${p.apellidoPaterno} ${p.apellidoMaterno}`,
+        ...p
+      },
+      position: {
+        x: 200 + index * 120,
+        y: 100
+      }
+    });
+  });
+
+  const parejas = {};
+
+personas.forEach((p) => {
+  if (p.padreId && p.madreId) {
+    const parejaKey = `${p.padreId}-${p.madreId}`;
+
+    if (!parejas[parejaKey]) {
+      const parejaId = `pareja-${parejaKey}`;
+      parejas[parejaKey] = parejaId;
+
+      nuevosNodos.push({
+        id: parejaId,
+        data: { label: "" },
+        position: { x: 300, y: 250 },
+        style: {
+          width: 10,
+          height: 10,
+          background: "#666",
+          borderRadius: "50%"
+        }
+      });
+
+      nuevasEdges.push(
+        { id: `e-${p.padreId}-${parejaId}`, source: p.padreId, target: parejaId },
+        { id: `e-${p.madreId}-${parejaId}`, source: p.madreId, target: parejaId }
+      );
+    }
+
+    nuevasEdges.push({
+      id: `e-${parejas[parejaKey]}-${p.id}`,
+      source: parejas[parejaKey],
+      target: p.id
+    });
+  }
+});
+
+
+  setNodes(nuevosNodos);
+  setEdges(nuevasEdges);
+};
+
+
+
+
 
   return (
   <div style={{ width: "100vw", height: "100vh", display: "flex" }}>
