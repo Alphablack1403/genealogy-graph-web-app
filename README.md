@@ -1,8 +1,8 @@
-# 🌳 Genealogy Graph Web App
+# Genealogy Graph Web App
 
 A robust and interactive web application for managing and visualizing family genealogy, built with **React Flow**, **Express**, and **SQLite**.
 
-## ✨ Características Principales
+## Características Principales
 
 -   **Visualización Dinámica**: Árbol interactivo con zoom, arrastre y organización automática.
 -   **Layout Inteligente**: Uso de `dagre` para posicionar automáticamente a familiares (Abuelos → Padres → Hijos).
@@ -15,7 +15,7 @@ A robust and interactive web application for managing and visualizing family gen
 
 ---
 
-## 🚀 Guía de Instalación y Ejecución
+## Guía de Instalación y Ejecución
 
 Para correr este proyecto en tu computadora, sigue estos pasos:
 
@@ -57,7 +57,7 @@ Para correr este proyecto en tu computadora, sigue estos pasos:
 
 ---
 
-## 🏗️ Detalles de Implementación (Arquitectura)
+## Detalles de Implementación (Arquitectura)
 
 ### Flujo de Datos
 1.  **Backend (API Rest)**: Express gestiona las rutas protegidas. Al registrarse/loguearse, el servidor devuelve un token JWT que el frontend almacena.
@@ -72,7 +72,7 @@ Se utiliza `html-to-image` para capturar el contenedor de React Flow y convertir
 
 ---
 
-## 📖 Manual de Usuario
+## Manual de Usuario
 
 1.  **Acceso**: Regístrate o inicia sesión para acceder a tu panel.
 2.  **Añadir Familiares**: Usa el formulario lateral derecho. Introduce nombres y selecciona a los padres de la lista desplegable.
