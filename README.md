@@ -1,6 +1,6 @@
-# 🌳 Árbol Genealógico Profesional
+# 🌳 Genealogy Graph Web App
 
-Una aplicación web interactiva y robusta para la gestión y visualización de genealogía familiar, construida con **React Flow**, **Express** y **SQLite**.
+A robust and interactive web application for managing and visualizing family genealogy, built with **React Flow**, **Express**, and **SQLite**.
 
 ## ✨ Características Principales
 
